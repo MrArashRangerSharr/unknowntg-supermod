@@ -7,7 +7,7 @@ local function create_group(msg)
     if is_sudo(msg) or is_realm(msg) and is_admin1(msg) then
 		local group_creator = msg.from.print_name
 		create_group_chat (group_creator, group_name, ok_cb, false)
-		return 'Group [ '..string.gsub(group_name, '_', ' ')..' ] has been created.'
+		return 'گروه [ '..string.gsub(group_name, '_', ' ')..' ] ساخته شد'
 	end
 end
 
@@ -16,7 +16,7 @@ local function create_realm(msg)
 	if is_sudo(msg) or is_realm(msg) and is_admin1(msg) then
 		local group_creator = msg.from.print_name
 		create_group_chat (group_creator, group_name, ok_cb, false)
-		return 'Realm [ '..string.gsub(group_name, '_', ' ')..' ] has been created.'
+		return 'ریلم [ '..string.gsub(group_name, '_', ' ')..' ] ساخته شد'
 	end
 end
 
@@ -44,17 +44,17 @@ local function get_group_type(msg)
   if data[tostring(msg.to.id)] then
     if not data[tostring(msg.to.id)]['group_type'] then
 		if msg.to.type == 'chat' and not is_realm(msg) then
-			data[tostring(msg.to.id)]['group_type'] = 'Group'
+			data[tostring(msg.to.id)]['group_type'] = 'گروه'
 			save_data(_config.moderation.data, data)
 		elseif msg.to.type == 'channel' then
-			data[tostring(msg.to.id)]['group_type'] = 'SuperGroup'
+			data[tostring(msg.to.id)]['group_type'] = 'سوپر گروه'
 			save_data(_config.moderation.data, data)
 		end
     end
 		local group_type = data[tostring(msg.to.id)]['group_type']
 		return group_type
 	else
-    return 'Chat type not found.'
+    return 'حالت گروه معلوم نشد.'
   end
 end
 
@@ -71,7 +71,7 @@ end
 
 local function set_description(msg, data, target, about)
     if not is_admin1(msg) then
-        return "For admins only!"
+        return "فقط مدیران!"
     end
     local data_cat = 'description'
         data[tostring(target)][data_cat] = about
