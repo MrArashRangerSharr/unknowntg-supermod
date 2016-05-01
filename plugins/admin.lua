@@ -6,11 +6,11 @@ local function set_bot_photo(msg, success, result)
     os.rename(result, file)
     print('File moved to:', file)
     set_profile_photo(file, ok_cb, false)
-    send_large_msg(receiver, 'Photo changed!', ok_cb, false)
+    send_large_msg(receiver, 'عکس تغییر کرد!', ok_cb, false)
     redis:del("bot:photo")
   else
     print('Error downloading: '..msg.id)
-    send_large_msg(receiver, 'Failed, please try again!', ok_cb, false)
+    send_large_msg(receiver, 'شکست خورده، لطفا دوباره امتحان کنید!', ok_cb, false)
   end
 end
 
@@ -25,7 +25,7 @@ local function logadd(msg)
 	end
 	data[tostring(GBan_log)][tostring(msg.to.id)] = msg.to.peer_id
 	save_data(_config.moderation.data, data)
-	local text = 'Log_SuperGroup has has been set!'
+	local text = 'ورود SuperGroup است راه اندازی شده است!'
 	reply_msg(msg.id,text,ok_cb,false)
 	return
 end
@@ -41,7 +41,7 @@ local function logrem(msg)
 	end
 	data[tostring(GBan_log)][tostring(msg.to.id)] = nil
 	save_data(_config.moderation.data, data)
-	local text = 'Log_SuperGroup has has been removed!'
+	local text = 'ورود SuperGroup است حذف شده است!'
 	reply_msg(msg.id,text,ok_cb,false)
 	return
 end
@@ -167,35 +167,35 @@ local function run(msg,matches)
     end
     if matches[1] == "setbotphoto" then
     	redis:set("bot:photo", "waiting")
-    	return 'Please send me bot photo now'
+    	return 'لطفا بفرستید عکس جدید ربات را'
     end
     if matches[1] == "markread" then
     	if matches[2] == "on" then
     		redis:set("bot:markread", "on")
-    		return "Mark read > on"
+    		return "خواندن پیام > روشن"
     	end
     	if matches[2] == "off" then
     		redis:del("bot:markread")
-    		return "Mark read > off"
+    		return "خواندن پیام > خاموش"
     	end
     	return
     end
     if matches[1] == "pm" then
     	local text = "Message From "..(msg.from.username or msg.from.last_name).."\n\nMessage : "..matches[3]
     	send_large_msg("user#id"..matches[2],text)
-    	return "Message has been sent"
+    	return "پیام ارسال شد"
     end
     
     if matches[1] == "pmblock" then
     	if is_admin2(matches[2]) then
-    		return "You can't block admins"
+    		return "شما نمیتوانید ادمین هارا بلاک کنید"
     	end
     	block_user("user#id"..matches[2],ok_cb,false)
-    	return "User blocked"
+    	return "کاربر بلاک شد"
     end
     if matches[1] == "pmunblock" then
     	unblock_user("user#id"..matches[2],ok_cb,false)
-    	return "User unblocked"
+    	return "کاربر از بلاک خارج شد"
     end
     if matches[1] == "import" then--join by group link
     	local hash = parsed_url(matches[2])
@@ -206,21 +206,21 @@ local function run(msg,matches)
     		return
     	end
       get_contact_list(get_contact_list_callback, {target = msg.from.id})
-      return "I've sent contact list with both json and text format to your private"
+      return "من لیست شماره هایم را در خصوصی ارسال کردم"
     end
     if matches[1] == "delcontact" then
 	    if not is_sudo(msg) then-- Sudo only
     		return
     	end
       del_contact("user#id"..matches[2],ok_cb,false)
-      return "User "..matches[2].." removed from contact list"
+      return "کاربر "..matches[2].." از لیست شماره ها پاک شد"
     end
     if matches[1] == "addcontact" and is_sudo(msg) then
     phone = matches[2]
     first_name = matches[3]
     last_name = matches[4]
     add_contact(phone, first_name, last_name, ok_cb, false)
-   return "User With Phone +"..matches[2].." has been added"
+   return "کاربر با شماره  +"..matches[2].." به لیست شماره ها اضافه گردید"
 end
  if matches[1] == "sendcontact" and is_sudo(msg) then
     phone = matches[2]
@@ -230,7 +230,7 @@ end
 end
  if matches[1] == "mycontact" and is_sudo(msg) then
 	if not msg.from.phone then
-		return "I must Have Your Phone Number!"
+		return "من شماره شمارا دارم!"
     end
     phone = msg.from.phone
     first_name = (msg.from.first_name or msg.from.phone)
@@ -240,7 +240,7 @@ end
 
     if matches[1] == "dialoglist" then
       get_dialog_list(get_dialog_list_callback, {target = msg.from.id})
-      return "I've sent a group dialog list with both json and text format to your private messages"
+      return "من فایلی حاوی فعالیت های گروه در خصوصی برای شما ارسال کردم"
     end
     if matches[1] == "whois" then
       user_info("user#id"..matches[2],user_info_callback,{msg=msg})
